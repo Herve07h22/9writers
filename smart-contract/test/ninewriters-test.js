@@ -164,6 +164,7 @@ describe("9 Writers", function () {
       contract.connect(addr1).transferFrom(addr1.address, owner.address, 1)
     ).to.be.revertedWith("ERC721: transfer caller is not owner nor approved");
   });
+
   it("A token cannot be sold to someone who already owns a token", async function () {
     let txn = await contract
       .connect(addr1)
@@ -180,5 +181,16 @@ describe("9 Writers", function () {
     ).to.be.revertedWith(
       "Cannot transfer the NFT to someone who already owns one"
     );
+  });
+
+  it("A new text writen on the wall emits an event", async function () {
+    let txn = await contract
+      .connect(addr1)
+      .mintNFT({ value: utils.parseEther("0.003") });
+    await txn.wait();
+
+    await expect(contract.connect(addr1).setText("Hello, World!"))
+      .to.emit(contract, "Updatedtext")
+      .withArgs(addr1.address, 0);
   });
 });

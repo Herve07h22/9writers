@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract NineWriters is ERC721Enumerable, Ownable {
     using SafeMath for uint256;
+
+    event Updatedtext(address indexed from, uint256 indexed tokenId);
     
     uint public constant MAX_SUPPLY = 9;
     uint public constant PRICE = 0.001 ether; 
@@ -47,14 +49,13 @@ contract NineWriters is ERC721Enumerable, Ownable {
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override
     {
         super._beforeTokenTransfer(from, to, amount);
-        
         require(balanceOf(to) == 0, "Cannot transfer the NFT to someone who already owns one");
     }
-
 
     function setText(string memory newText) external nbOfOwnedToken(1) {
         uint tokenId = tokenOfOwnerByIndex(msg.sender, 0);
         textsOfTheWall[tokenId] = newText;
+        emit Updatedtext(msg.sender, tokenId);
     }
 
     function getTexts() external view returns (string[] memory) {
