@@ -44,6 +44,13 @@ contract NineWriters is ERC721Enumerable, Ownable {
         _safeMint(msg.sender, newTokenID);
     }
 
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override
+    {
+        super._beforeTokenTransfer(from, to, amount);
+        
+        require(balanceOf(to) == 0, "Cannot transfer the NFT to someone who already owns one");
+    }
+
 
     function setText(string memory newText) external nbOfOwnedToken(1) {
         uint tokenId = tokenOfOwnerByIndex(msg.sender, 0);

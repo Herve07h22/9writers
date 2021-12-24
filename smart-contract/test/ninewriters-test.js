@@ -49,7 +49,7 @@ describe("9 Writers", function () {
     ).to.be.revertedWith("Not enough ether to purchase 1 NFT.");
   });
 
-  it("You can buy a token and write to the wall", async function () {
+  it("You can buy a token and write on the wall", async function () {
     const txn1 = await contract.mintNFT({ value: utils.parseEther("0.003") });
     await txn1.wait();
     const txn2 = await contract.setText("Bonjour, Monde!");
@@ -68,7 +68,7 @@ describe("9 Writers", function () {
     ]);
   });
 
-  it("2 owners can write to the wall", async function () {
+  it("2 owners can write on the wall", async function () {
     let txn = await contract
       .connect(addr1)
       .mintNFT({ value: utils.parseEther("0.003") });
@@ -95,6 +95,8 @@ describe("9 Writers", function () {
       "",
       "",
     ]);
+    const nbOfTokens = await contract.totalSupply();
+    expect(nbOfTokens).to.equal(2);
   });
 
   it("A non owner cannot write on the wall", async function () {
@@ -121,5 +123,62 @@ describe("9 Writers", function () {
       "",
       "",
     ]);
+  });
+
+  it("An owner cannot buy another token", async function () {
+    let txn = await contract
+      .connect(addr1)
+      .mintNFT({ value: utils.parseEther("0.003") });
+    await txn.wait();
+
+    await expect(
+      contract.connect(addr1).mintNFT({ value: utils.parseEther("0.003") })
+    ).to.be.revertedWith("Operation denied");
+  });
+
+  it("It cannot exist more than 9 tokens", async function () {
+    for (let i = 0; i < 9; i++) {
+      let txn = await contract
+        .connect(addrs[i])
+        .mintNFT({ value: utils.parseEther("0.003") });
+      await txn.wait();
+    }
+
+    await expect(
+      contract.connect(addr1).mintNFT({ value: utils.parseEther("0.003") })
+    ).to.be.revertedWith("Not enough NFTs left");
+  });
+
+  it("A token cannot be sold to someone else if you do not own it", async function () {
+    let txn = await contract
+      .connect(addr1)
+      .mintNFT({ value: utils.parseEther("0.003") });
+    await txn.wait();
+    txn = await contract
+      .connect(addr2)
+      .mintNFT({ value: utils.parseEther("0.003") });
+    await txn.wait();
+    txn = await contract.connect(addr1).setText("Hello, World!");
+    await txn.wait();
+    await expect(
+      contract.connect(addr1).transferFrom(addr1.address, owner.address, 1)
+    ).to.be.revertedWith("ERC721: transfer caller is not owner nor approved");
+  });
+  it("A token cannot be sold to someone who already owns a token", async function () {
+    let txn = await contract
+      .connect(addr1)
+      .mintNFT({ value: utils.parseEther("0.003") });
+    await txn.wait();
+    txn = await contract
+      .connect(addr2)
+      .mintNFT({ value: utils.parseEther("0.003") });
+    await txn.wait();
+    txn = await contract.connect(addr1).setText("Hello, World!");
+    await txn.wait();
+    await expect(
+      contract.connect(addr1).transferFrom(addr1.address, addr2.address, 0)
+    ).to.be.revertedWith(
+      "Cannot transfer the NFT to someone who already owns one"
+    );
   });
 });
