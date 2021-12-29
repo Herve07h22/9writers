@@ -193,4 +193,42 @@ describe("9 Writers", function () {
       .to.emit(contract, "Updatedtext")
       .withArgs(addr1.address, 0);
   });
+
+  it("The amount of sales can be withdrawn", async function () {
+    let txn = await contract
+      .connect(addr1)
+      .mintNFT({ value: utils.parseEther("0.01") });
+    await txn.wait();
+
+    txn = await contract.connect(owner).withdraw();
+    await txn.wait();
+    expect(txn).to.changeEtherBalance(owner, utils.parseEther("0.01"));
+  });
+
+  it("A token can be sold to someone else", async function () {
+    let txn = await contract
+      .connect(addr1)
+      .mintNFT({ value: utils.parseEther("0.003") });
+    await txn.wait();
+    // Transfer the NFT to addr2
+    txn = await contract
+      .connect(addr1)
+      .transferFrom(addr1.address, addr2.address, 0);
+    await txn.wait();
+
+    const txn2 = await contract.connect(addr2).setText("Bonjour, Monde!");
+    await txn2.wait();
+    const texts = await contract.getTexts();
+    expect(texts).to.deep.equal([
+      "Bonjour, Monde!",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+    ]);
+  });
 });

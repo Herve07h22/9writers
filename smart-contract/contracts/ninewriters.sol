@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -18,6 +17,10 @@ contract NineWriters is ERC721Enumerable, Ownable {
 
     constructor() ERC721("9 writers", "9WRI") {
         textsOfTheWall = new string[](9);
+    }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return "https://9writers.com/writers/";
     }
 
     modifier enoughNFTleft() {
@@ -46,9 +49,9 @@ contract NineWriters is ERC721Enumerable, Ownable {
         _safeMint(msg.sender, newTokenID);
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override
     {
-        super._beforeTokenTransfer(from, to, amount);
+        super._beforeTokenTransfer(from, to, tokenId);
         require(balanceOf(to) == 0, "Cannot transfer the NFT to someone who already owns one");
     }
 
