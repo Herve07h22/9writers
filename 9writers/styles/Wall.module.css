@@ -1,66 +1,49 @@
-@import url(//fonts.googleapis.com/css?family=Rock+Salt);
 @import url(//fonts.googleapis.com/css?family=Permanent+Marker);
 
 .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   height: 100vh;
-  overflow: hidden;
-  perspective: 1000px;
-  width: 100vw;
+  width: 100hh;
+  padding: 0.5rem;
 }
 
 .wall {
-  background: url("https://images.unsplash.com/photo-1508341421810-36b8fc06075b?ixlib=rb-0.3.5&q=85&fm=jpg&crop=entropy&cs=srgb&ixid=eyJhcHBfaWQiOjE0NTg5fQ&s=46c4a1eb3ddb994547163b77e9565385");
+  flex: auto;
+  background: url("/images/wall.jpg") center center fixed;
   background-size: cover;
-  height: 75%;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.menu {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 4rem 1.5rem 2rem;
   width: 100%;
+  font-family: monospace;
 }
 
-.graffiti {
-  font-size: 4em;
-  margin-top: 7%;
-  position: absolute;
-  text-align: center;
-  width: 100%;
-}
-
-.graffiti del {
-  color: red;
-}
-
-.graffiti del {
-  font-family: "Rock Salt", cursive;
-}
-
-.graffiti p {
-  font-family: "Rock Salt", cursive;
-}
-
-.graffiti ins {
-  color: yellow;
-  font-family: "Permanent Marker", cursive;
-}
-
-.grass {
-  background: url(https://images.unsplash.com/photo-1457536610610-bf4b249617c7?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ&s=79f48ca96e45be12bb0754e73c28e207);
-  margin-top: -30vh;
-  height: 40%;
-  transform: rotateX(80deg);
-  transform-origin: top;
-  width: 100%;
-}
-
-.walk {
-  height: 30%;
-  transform: rotateX(80deg);
-  transform-origin: top;
+.footer {
+  flex: 1;
   width: 100%;
   display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 0.5rem;
+  font-family: monospace;
 }
 
-.walk .line {
-  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1848751/Screen%20Shot%202018-05-07%20at%2012.18.26%20PM.png);
-  background-size: cover;
-  width: 20%;
-  border-right: 2px solid #444;
+.logo {
+  font-family: "Rock Salt";
+  font-weight: bold;
 }
